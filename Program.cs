@@ -10,15 +10,14 @@ builder.Services.AddSwaggerGen();
 
 
 //GraphQL
-builder.Services.AddPooledDbContextFactory<AppDbContext>(options => options.UseInMemoryDatabase("MovieDB"));
+builder.Services.AddSingleton<DirectorRepository>();
+
 builder.Services
     .AddGraphQLServer()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
     .AddFiltering()
     .AddSorting();
-
-
 
 var app = builder.Build();
 
@@ -31,19 +30,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
+app.MapGraphQL();
 app.Run();
