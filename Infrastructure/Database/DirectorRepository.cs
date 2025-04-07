@@ -34,7 +34,7 @@ namespace graphql_api.Infrastructure.Database
 
             if (directorToUpdate != null)
             {
-                _directors.Remove(director);
+                _directors.Remove(directorToUpdate);
                 director.Id = directorToUpdate.Id;
                 _directors.Add(director);
                 return director;

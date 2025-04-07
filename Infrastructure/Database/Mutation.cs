@@ -15,5 +15,15 @@ namespace graphql_api.Infrastructure.Database
         {
             return _directorRepository.AddDirector(director);
         }
+
+        public Director UpdateDirector(int id, Director director)
+        {
+            return _directorRepository.UpdateDirector(id, director);
+        }
+
+        public bool DeleteDirector(int id)
+        {
+            return _directorRepository.DeleteDirector(id);
+        }
     }
 }

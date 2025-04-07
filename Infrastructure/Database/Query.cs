@@ -15,5 +15,10 @@ namespace graphql_api.Infrastructure.Database
         {
             return _directorRepository.GetDirectors();
         }
+
+        public Director GetDirector(int id)
+        {
+            return _directorRepository.GetDirector(id);
+        }
     }
 }
