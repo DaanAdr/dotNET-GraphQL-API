@@ -4,27 +4,25 @@ namespace graphql_api.Infrastructure.Database
 {
     public class DirectorRepository
     {
-        private readonly List<Director> _directors = new List<Director>
+        private readonly AppDbContext _appDbContext;
+        public DirectorRepository(AppDbContext appDbContext)
         {
-            new Director { Id = 1, Firstname = "Martin", Surname = "Scorsese"},
-            new Director { Id = 2, Firstname = "Peter", Surname = "Berg"},
-        };
+            _appDbContext = appDbContext;
+        }
 
         public IQueryable<Director> GetDirectors()
         {
-            return _directors.AsQueryable();
+            return _appDbContext.Director.AsQueryable();
         }
 
         public Director GetDirector(int id)
         {
-            return _directors.FirstOrDefault(d => d.Id == id);
+            return _appDbContext.Director.FirstOrDefault(d => d.Id == id);
         }
 
         public Director AddDirector(Director director)
         {
-            int id = _directors.Max(d => d.Id) + 1;
-            director.Id = id;
-            _directors.Add(director);
+            _appDbContext.Director.Add(director);
             return director;
         }
 
@@ -34,9 +32,9 @@ namespace graphql_api.Infrastructure.Database
 
             if (directorToUpdate != null)
             {
-                _directors.Remove(directorToUpdate);
+                _appDbContext.Director.Remove(directorToUpdate);
                 director.Id = directorToUpdate.Id;
-                _directors.Add(director);
+                _appDbContext.Director.Add(director);
                 return director;
             }
             return null;
@@ -48,7 +46,7 @@ namespace graphql_api.Infrastructure.Database
 
             if (director != null)
             {
-                _directors.Remove(director);
+                _appDbContext.Director.Remove(director);
                 return true;
             }
             return false;

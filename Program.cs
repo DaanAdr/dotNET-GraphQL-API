@@ -10,7 +10,12 @@ builder.Services.AddSwaggerGen();
 
 
 //GraphQL
-builder.Services.AddSingleton<DirectorRepository>();
+builder.Services.AddScoped<DirectorRepository>();
+
+builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
+        {
+            optionsBuilder.UseMySql(connectionString: builder.Configuration["DBConnectionString"]!, serverVersion: new MySqlServerVersion(versionString: "11.7.2-MariaDB"));
+        });
 
 builder.Services
     .AddGraphQLServer()

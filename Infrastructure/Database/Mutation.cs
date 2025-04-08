@@ -1,4 +1,5 @@
 ﻿using graphql_api.DataModels;
+using graphql_api.DTOs;
 
 namespace graphql_api.Infrastructure.Database
 {
@@ -11,9 +12,15 @@ namespace graphql_api.Infrastructure.Database
             _directorRepository = directorRepository;
         }
 
-        public Director AddDirector(Director director)
+        public Director AddDirector(AddDirector director)
         {
-            return _directorRepository.AddDirector(director);
+            Director payload = new Director
+            {
+                Firstname = director.Firstname,
+                Surname = director.Surname
+            };
+
+            return _directorRepository.AddDirector(payload);
         }
 
         public Director UpdateDirector(int id, Director director)
