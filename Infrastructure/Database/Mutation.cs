@@ -1,5 +1,5 @@
-﻿using graphql_api.DataModels;
-using graphql_api.DTOs;
+﻿using graphql_api.DTOs;
+using graphql_api.Infrastructure.Database.DataModels;
 
 namespace graphql_api.Infrastructure.Database
 {
