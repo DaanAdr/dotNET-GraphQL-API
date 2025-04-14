@@ -2,7 +2,7 @@
 
 namespace graphql_api.DataModels
 {
-    public class Director
+    public sealed class Director
     {
         [Key]
         public int Id { get; set; }

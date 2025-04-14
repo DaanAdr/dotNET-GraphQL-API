@@ -1,6 +1,6 @@
-﻿using graphql_api.Infrastructure.Database.DataModels;
+﻿using graphql_api.DataModels;
 
-namespace graphql_api.Infrastructure.Database.Queries
+namespace graphql_api.Infrastructure.Database.Directors
 {
     [QueryType]
     public static class DirectorQueries

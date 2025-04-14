@@ -1,4 +1,4 @@
-﻿using graphql_api.Infrastructure.Database.DataModels;
+﻿using graphql_api.DataModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace graphql_api.Infrastructure.Database

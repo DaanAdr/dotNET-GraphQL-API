@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace graphql_api.Infrastructure.Database.DataModels
+namespace graphql_api.Infrastructure.Database.Directors
 {
-    public class Director
+    public class AddDirectorDTO
     {
-        [Key]
-        public int Id { get; set; }
+        [Required]
         public string Firstname { get; set; }
+        [Required]
         public string Surname { get; set; }
     }
 }
