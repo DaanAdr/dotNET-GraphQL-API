@@ -28,7 +28,7 @@ namespace graphql_api.Infrastructure.Database.Directors
             AppDbContext databaseContext,
             CancellationToken cancellationToken)
         {
-            Director directorToUpdate = DirectorQueries.GetDirectorById(id, databaseContext);
+            Director directorToUpdate = await DirectorQueries.GetDirectorByIdAsync(id, databaseContext);
 
             if (directorToUpdate != null)
             {
@@ -49,7 +49,7 @@ namespace graphql_api.Infrastructure.Database.Directors
             AppDbContext databaseContext,
             CancellationToken cancellationToken)
         {
-            Director directorToRemove = DirectorQueries.GetDirectorById(id, databaseContext);
+            Director directorToRemove = await DirectorQueries.GetDirectorByIdAsync(id, databaseContext);
 
             if(directorToRemove != null)
             {
