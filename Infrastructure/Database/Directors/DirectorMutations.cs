@@ -1,4 +1,5 @@
-﻿using graphql_api.DataModels;
+﻿using System.ComponentModel.DataAnnotations;
+using graphql_api.DataModels;
 
 namespace graphql_api.Infrastructure.Database.Directors
 {
@@ -10,6 +11,16 @@ namespace graphql_api.Infrastructure.Database.Directors
             AppDbContext databaseContext,
             CancellationToken cancellationToken)
         {
+            var validationResults = new List<ValidationResult>();
+            var validationContext = new ValidationContext(director);
+            bool isValid = Validator.TryValidateObject(director, validationContext, validationResults, true);
+
+            if (!isValid)
+            {
+                var errMessage = validationResults.First().ErrorMessage;
+                throw new GraphQLException(errMessage);
+            }
+
             Director payload = new Director
             {
                 Firstname = director.Firstname,
