@@ -1,4 +1,5 @@
 ﻿using graphql_api.DataModels;
+using HotChocolate.Execution.Processing;
 
 namespace graphql_api.Infrastructure.Database.Directors
 {
@@ -6,16 +7,18 @@ namespace graphql_api.Infrastructure.Database.Directors
     public static class DirectorQueries
     {
         public static IQueryable<Director> GetDirectors(
-            AppDbContext databaseContext)
+            AppDbContext databaseContext,
+            ISelection selection)   // Ensures only the desired properties are fetched from the database
         {
-            return databaseContext.Director.AsQueryable();
+            return databaseContext.Director.Select(selection).AsQueryable();
         }
 
         public static Director GetDirectorById(
             int id,
-            AppDbContext databaseContext)
+            AppDbContext databaseContext,
+            ISelection selection)
         {
-            return databaseContext.Director.FirstOrDefault(d => d.Id == id);
+            return databaseContext.Director.Select(selection).FirstOrDefault(d => d.Id == id);
         }
     }
 }

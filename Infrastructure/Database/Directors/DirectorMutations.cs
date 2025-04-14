@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using graphql_api.DataModels;
+﻿using graphql_api.DataModels;
 
 namespace graphql_api.Infrastructure.Database.Directors
 {
