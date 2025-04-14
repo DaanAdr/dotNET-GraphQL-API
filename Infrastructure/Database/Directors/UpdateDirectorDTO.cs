@@ -2,7 +2,7 @@
 {
     public class UpdateDirectorDTO
     {
-        public string Firstname { get; set; }
-        public string Surname { get; set; }
+        public string? Firstname { get; set; }  // Properties made nullable so only the necessary fields get updated
+        public string? Surname { get; set; }
     }
 }
