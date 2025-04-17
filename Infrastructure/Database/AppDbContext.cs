@@ -11,6 +11,7 @@ namespace graphql_api.Infrastructure.Database
         }
 
         public DbSet<Director> Director { get; set; }
+        public DbSet<User> Users { get; set; }
 
     }
 }
