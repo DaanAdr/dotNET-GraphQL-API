@@ -1,4 +1,5 @@
 using System.Text;
+using graphql_api.Helperclasses;
 using graphql_api.Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +18,7 @@ builder.Services
     .AddGraphQLMoviesAPITypes()
     .AddAuthorization();
 
-SymmetricSecurityKey signingKey = new SymmetricSecurityKey(
-    Encoding.UTF8.GetBytes("MySuperSecretKey"));
+builder.Services.AddSingleton<AuthLogic>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -27,10 +27,14 @@ builder.Services
         options.TokenValidationParameters =
             new TokenValidationParameters
             {
-                ValidIssuer = "https://auth.chillicream.com",
-                ValidAudience = "https://graphql.chillicream.com",
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingKey
+                ValidIssuer = builder.Configuration["TokenSettings:Issuer"],
+                ValidAudience = builder.Configuration["TokenSettings:Issuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(builder.Configuration["TokenSettings:Key"])),
+                ValidateIssuer = true,
+                // ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true
             };
     });
 

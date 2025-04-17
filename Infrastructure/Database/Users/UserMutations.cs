@@ -4,9 +4,9 @@ using graphql_api.Helperclasses;
 namespace graphql_api.Infrastructure.Database.Users
 {
     [MutationType]
-    public static class UserMutations
+    public sealed class UserMutations(AuthLogic tokenLogic)
     {
-        public static async Task<User> RegisterUser(
+        public async Task<User> RegisterUser(
             UserDTO userDTO,
             AppDbContext databaseContext,
             CancellationToken cancellationToken)
@@ -25,7 +25,7 @@ namespace graphql_api.Infrastructure.Database.Users
             return payload;
         }
 
-        public static async Task<bool> LoginUser(
+        public async Task<LoginUserResultDTO> LoginUser(
             UserDTO userDTO,
             AppDbContext databaseContext,
             CancellationToken cancellationToken)
@@ -38,11 +38,25 @@ namespace graphql_api.Infrastructure.Database.Users
                 // Check if password is correct
                 if(PasswordHashLogic.VerifyPassword(userDTO.Password, foundUser.Password))
                 {
-                    return true;
+                    LoginUserResultDTO loggedInUser = new LoginUserResultDTO
+                    {
+                        Email = userDTO.Email,
+                        Token = tokenLogic.GetAuthToken(foundUser)
+                    };
+
+                    return loggedInUser;
+                }
+                else
+                {
+                    // Password is incorrect
+                    throw new UnauthorizedAccessException("Invalid password.");
                 }
             }
-
-            return false;
+            else
+            {
+                // User not found
+                throw new System.Collections.Generic.KeyNotFoundException("User not found.");
+            }
         }
     }
 }
