@@ -8,5 +8,7 @@ namespace graphql_api.DataModels
         public int Id { get; set; }
         public string Firstname { get; set; }
         public string Surname { get; set; }
+
+        public ICollection<Movie> Movies { get; set; }
     }
 }
