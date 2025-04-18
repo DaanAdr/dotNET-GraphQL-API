@@ -1,11 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using graphql_api.DataModels;
+using HotChocolate.Authorization;
 
 namespace graphql_api.Infrastructure.Database.Directors
 {
     [MutationType]
     public static class DirectorMutations
     {
+        [Authorize]     // DataAnnotation needs to be added the the functions, not the class.
+                        // Adding it to the class will cause other mutations to also require authorization, like logging in and registering.
+                        // Though it might be desirable to use the DataAnnotation [AllowAnonymous] for those
         public static async Task<Director> AddDirectorAsync(
             AddDirectorDTO director,
             AppDbContext databaseContext,
@@ -33,6 +37,7 @@ namespace graphql_api.Infrastructure.Database.Directors
             return payload;
         }
 
+        [Authorize]
         public static async Task<Director> UpdateDirector(
             int id,
             UpdateDirectorDTO director,
@@ -55,6 +60,7 @@ namespace graphql_api.Infrastructure.Database.Directors
             return null;
         }
 
+        [Authorize]
         public static async Task<bool> DeleteDirector(
             int id,
             AppDbContext databaseContext,
