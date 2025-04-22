@@ -14,6 +14,7 @@ namespace graphql_api.Infrastructure.Database
         public DbSet<User> Users { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Actor> Actors { get; set; }
+        public DbSet<MovieActor> MovieActors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +22,16 @@ namespace graphql_api.Infrastructure.Database
                 .HasOne(m => m.Director)
                 .WithMany(d => d.Movies)
                 .HasForeignKey(m => m.DirectorId);
+
+            modelBuilder.Entity<MovieActor>()
+                .HasOne(ma => ma.Actor)
+                .WithMany(ma => ma.MovieActors)
+                .HasForeignKey(ma => ma.ActorId);
+
+            modelBuilder.Entity<MovieActor>()
+                .HasOne(ma => ma.Movie)
+                .WithMany(ma => ma.MovieActors)
+                .HasForeignKey(ma => ma.MovieId);
         }
     }
 }

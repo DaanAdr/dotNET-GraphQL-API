@@ -11,7 +11,12 @@ namespace graphql_api.Infrastructure.Database.Movies
             AppDbContext databaseContext,
             ISelection selection)
         {
-            return await databaseContext.Movies.Select(selection).ToListAsync();
+            // return await databaseContext.Movies.Select(selection).ToListAsync();
+            return await databaseContext.Movies
+                .Include(m => m.MovieActors)
+                    .ThenInclude(ma => ma.Actor)
+                .Include(m => m.Director)
+                .ToListAsync();
         }
     }
 }
