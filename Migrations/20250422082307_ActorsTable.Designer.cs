@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using graphql_api.Infrastructure.Database;
 
@@ -10,9 +11,11 @@ using graphql_api.Infrastructure.Database;
 namespace graphql_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422082307_ActorsTable")]
+    partial class ActorsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,29 +88,6 @@ namespace graphql_api.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("graphql_api.DataModels.MovieActor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActorId");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("MovieActors");
-                });
-
             modelBuilder.Entity("graphql_api.DataModels.User", b =>
                 {
                     b.Property<int>("Id")
@@ -140,38 +120,9 @@ namespace graphql_api.Migrations
                     b.Navigation("Director");
                 });
 
-            modelBuilder.Entity("graphql_api.DataModels.MovieActor", b =>
-                {
-                    b.HasOne("graphql_api.DataModels.Actor", "Actor")
-                        .WithMany("MovieActors")
-                        .HasForeignKey("ActorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("graphql_api.DataModels.Movie", "Movie")
-                        .WithMany("MovieActors")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Actor");
-
-                    b.Navigation("Movie");
-                });
-
-            modelBuilder.Entity("graphql_api.DataModels.Actor", b =>
-                {
-                    b.Navigation("MovieActors");
-                });
-
             modelBuilder.Entity("graphql_api.DataModels.Director", b =>
                 {
                     b.Navigation("Movies");
-                });
-
-            modelBuilder.Entity("graphql_api.DataModels.Movie", b =>
-                {
-                    b.Navigation("MovieActors");
                 });
 #pragma warning restore 612, 618
         }

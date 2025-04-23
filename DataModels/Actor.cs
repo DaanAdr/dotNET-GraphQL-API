@@ -1,16 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace graphql_api.DataModels
 {
-    public class Movie
+    public class Actor
     {
         [Key]
         public int Id { get; set; }
-        public string Title { get; set; }
-        public int DirectorId { get; set; }
+        public string Firstname { get; set; }
+        public string Surname { get; set; }
 
-        public Director Director { get; set; }
         public ICollection<MovieActor> MovieActors { get; set; }
     }
 }

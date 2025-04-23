@@ -4,9 +4,9 @@ using HotChocolate.Authorization;
 namespace graphql_api.Infrastructure.Database.Movies
 {
     [MutationType]
-    [Authorize]
     public static class MovieMutations
     {
+        [Authorize]
         public static async Task<Movie> AddMovie(
             AddMovieDTO movieDTO,
             AppDbContext databaseContext,
