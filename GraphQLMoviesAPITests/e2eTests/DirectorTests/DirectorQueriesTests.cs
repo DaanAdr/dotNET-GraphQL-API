@@ -1,21 +1,20 @@
 ﻿using System.Text;
 using graphql_api.DataModels;
 using graphql_api.Infrastructure.Database;
-using Microsoft.EntityFrameworkCore;
+using graphql_api.Infrastructure.Database.Directors;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace GraphQLMoviesAPITests.e2eTests.DirectorTests
 {
     public class DirectorQueriesTests : IClassFixture<e2eTestsWebApplicationFactory>
     {
         private readonly HttpClient _httpClient;
-        private readonly AppDbContext _databaseContext;
         private readonly e2eTestsWebApplicationFactory _factory;
         public DirectorQueriesTests(e2eTestsWebApplicationFactory factory)
         {
             _httpClient = factory.CreateClient();
-            //_databaseContext = factory.Services.GetRequiredService<AppDbContext>();
             _factory = factory;
         }
 
@@ -23,32 +22,32 @@ namespace GraphQLMoviesAPITests.e2eTests.DirectorTests
         public async Task GetAllDirectorsAsync()
         {
             // Arrange
-            var director1 = new Director()
-            {
-                Id = 1,
-                Firstname = "Nigel",
-                Surname = "Young"
+            List<Director> databaseDirectors = new List<Director> {
+                new Director()
+                {
+                    Id = 1,
+                    Firstname = "Nigel",
+                    Surname = "Young"
+                }, 
+                new Director()
+                {
+                    Id = 2,
+                    Firstname = "Tom",
+                    Surname = "Scott"
+                } 
             };
 
-            var director2 = new Director()
+            using (IServiceScope scope = _factory.Services.CreateScope())
             {
-                Id = 2,
-                Firstname = "Tom",
-                Surname = "Scott"
-            };
-
-            using (var scope = _factory.Services.CreateScope())
-            {
-                var scopedServices = scope.ServiceProvider;
-                var db = scopedServices.GetRequiredService<AppDbContext>();
+                AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
                 // Seed specific test data
-                await db.Director.AddRangeAsync([director1, director2]);
+                await db.Director.AddRangeAsync(databaseDirectors);
                 await db.SaveChangesAsync();
             }
 
             // Act
-            var requestBody = new
+            string json = JsonConvert.SerializeObject(new
             {
                 query = @"
                     {
@@ -57,20 +56,24 @@ namespace GraphQLMoviesAPITests.e2eTests.DirectorTests
                             surname
                         }
                     }"
-            };
+            });
 
-            var json = JsonConvert.SerializeObject(requestBody);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync("graphql", content);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _httpClient.PostAsync("graphql", content);
 
             response.EnsureSuccessStatusCode();
 
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var test2 = 2;
+            string responseContent = await response.Content.ReadAsStringAsync();
+            List<DirectorType>? directorList = JObject.Parse(responseContent)["data"]["directors"].ToObject<List<DirectorType>>();
 
             // Assert
+            Assert.Equal(databaseDirectors.Count, directorList.Count);
+
+            for (int i = 0; i < directorList.Count; i++)
+            {
+                Assert.Equal(databaseDirectors[i].Id, directorList[i].Id);
+                Assert.Equal(databaseDirectors[i].Surname, directorList[i].Surname);
+            }
         }
     }
 }
