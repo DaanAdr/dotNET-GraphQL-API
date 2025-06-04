@@ -1,4 +1,5 @@
 ﻿using graphql_api.DataModels;
+using graphql_api.Infrastructure.Database.Actors;
 using HotChocolate.Execution.Processing;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +24,12 @@ namespace graphql_api.Infrastructure.Database.Movies
                 Id = m.Id,
                 Title = m.Title,
                 Director = m.Director,
-                Actors = m.MovieActors.Select(ma => ma.Actor).ToList()
+                Actors = m.MovieActors.Select(ma => new ActorType()
+                {
+                    Id = ma.Actor.Id,
+                    Firstname = ma.Actor.Firstname,
+                    Surname = ma.Actor.Surname
+                }).ToList()
             }).ToList();
 
             return movieTypes;

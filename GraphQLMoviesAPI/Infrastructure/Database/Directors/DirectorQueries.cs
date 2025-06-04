@@ -14,15 +14,36 @@ namespace graphql_api.Infrastructure.Database.Directors
             return await databaseContext.Director.Select(selection).ToListAsync();
         }
 
-        public static async Task<Director> GetDirectorByIdAsync(
+        public static async Task<DirectorType> GetDirectorByIdAsync(
             int id,
             AppDbContext databaseContext,
             ISelection selection)
         {
             //return await databaseContext.Director.Include(d => d.Movies).Select(selection).FirstOrDefaultAsync(d => d.Id == id); // Include needs to be before the Select
-            return await databaseContext.Director.Include(d => d.Movies).FirstOrDefaultAsync(d => d.Id == id); 
-                // Include needs to be before the Select
-                // Eager Loading doesn't work well with Select
+            // Include needs to be before the Select
+            // Eager Loading doesn't work well with Select
+
+            Director director = await databaseContext.Director.Include(d => d.Movies).SingleOrDefaultAsync(d => d.Id == id);
+
+            DirectorType directorType = new DirectorType()
+            {
+                Id = director.Id,
+                Firstname = director.Firstname,
+                Surname = director.Surname,
+                Movies = director.Movies.Select(m => new Movies.MovieType()
+                {
+                    Id = m.Id,
+                    Title = m.Title,
+                    Actors = m.MovieActors.Select(ma => new Actors.ActorType()
+                    {
+                        Id = ma.Actor.Id,
+                        Firstname = ma.Actor.Firstname,
+                        Surname = ma.Actor.Surname
+                    }).ToList()
+                }).ToList()
+            };
+
+            return directorType;
         }
 
         // Fetched all data from the database, for use with internal functions such as mutations
